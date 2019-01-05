@@ -1,5 +1,6 @@
 package com.zeba.base.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,8 +23,8 @@ public class ImageUtils {
      * @param bitmap bitmap 对象
      * @return drawable
      */
-    public static Drawable bitmap2Drawable(final Bitmap bitmap) {
-        return bitmap == null ? null : new BitmapDrawable(AppUtils.getAppContext().getResources(), bitmap);
+    public static Drawable bitmap2Drawable(Context context,Bitmap bitmap) {
+        return bitmap == null ? null : new BitmapDrawable(context.getResources(), bitmap);
     }
 
     /**

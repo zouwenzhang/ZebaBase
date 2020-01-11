@@ -12,6 +12,7 @@ import com.zeba.base.test.viewbind.MainActivityViews;
 
 public class MainActivity extends AppCompatActivity {
     private MainActivityViews views;
+    private MyDialog myDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+        myDialog=new MyDialog(this);
+        findViewById(R.id.bt_dialog).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog.show();
             }
         });
     }

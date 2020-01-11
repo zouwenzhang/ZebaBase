@@ -27,11 +27,19 @@ public class GlideRoundTransform extends BitmapTransformation {
         Paint paint = new Paint();
         paint.setShader(new BitmapShader(toTransform, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
         paint.setAntiAlias(true);
+        int x=0;
+        if(result.getHeight()>outHeight){
+            x=(result.getHeight()-outHeight)/2;
+        }
+        int y=0;
+        if(result.getWidth()>outWidth){
+            y=(result.getWidth()-outWidth)/2;
+        }
         RectF rectF=new RectF();
-        rectF.left=0;
-        rectF.top=0;
-        rectF.right=outWidth;
-        rectF.bottom=outHeight;
+        rectF.left=y;
+        rectF.top=x;
+        rectF.right=outWidth+y;
+        rectF.bottom=outHeight+x;
         canvas.drawRoundRect(rectF,round,round,paint);
         return result;
 

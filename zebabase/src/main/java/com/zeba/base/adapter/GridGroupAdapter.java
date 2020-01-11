@@ -23,11 +23,11 @@ public abstract class GridGroupAdapter extends RecyclerView.Adapter<RecyclerView
 
     private GridLayoutManager manager;
     public void setRecyclerView(RecyclerView recyclerView){
-        manager = new GridLayoutManager(recyclerView.getContext(),1, OrientationHelper.VERTICAL, false);
+        manager = new GridLayoutManager(recyclerView.getContext(),getMaxSpanCount(), OrientationHelper.VERTICAL, false);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return getSpanSize(getItemViewType(position));
+                return getSpanCount(getItemViewType(position));
             }
         });
         recyclerView.setLayoutManager(manager);
@@ -54,7 +54,8 @@ public abstract class GridGroupAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-    public abstract int getSpanSize(int type);
+    public abstract int getMaxSpanCount();
+    public abstract int getSpanCount(int type);
     public abstract int getLayoutId(int type);
     public abstract void convert(GridViewHolder holder, GridGroupItem item);
 

@@ -25,7 +25,6 @@ public class ZebaAM {
 	public void pop(BaseActivityIml activity) {
 		if (activity != null) {
 			removeTab(activity);
-			activity.back();
 			getQueue().remove(activity);
 		}
 	}
@@ -76,13 +75,14 @@ public class ZebaAM {
 		getQueue().add(activity);
 	}
 
-	public void popAll(){
+	public void popBackAll(){
 		while(true){
 			BaseActivityIml activity = current();
 			if (activity == null) {
 				break;
 			}
 			pop(activity);
+			activity.back();
 		}
 	}
 
@@ -103,23 +103,31 @@ public class ZebaAM {
 			if(list!=null&&list.contains(activity)){
 				list.remove(activity);
 				if(list.size()==0){
-					getTabMap().remove(key);
+					it.remove();
 				}
 			}
 		}
 	}
 
-	public void popByTab(String tab){
-
+	public void popBackByTab(String tab){
 
 		List<BaseActivityIml> list=getTabMap().get(tab);
 		if(list==null){
 			return;
 		}
-		for(BaseActivityIml activity:list){
+		for(int i=list.size()-1;i>=0;i--){
+			BaseActivityIml activity=list.get(i);
 			pop(activity);
+			activity.back();
 		}
 		list.clear();
 		getTabMap().remove(tab);
+	}
+
+	public void popBackToIndex(int index){
+		List<BaseActivityIml> list=getQueue();
+		for(int i=list.size()-1;i>index;i--){
+			list.get(i).back();
+		}
 	}
 }

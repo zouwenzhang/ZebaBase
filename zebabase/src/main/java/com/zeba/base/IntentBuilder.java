@@ -5,14 +5,48 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class IntentBuilder {
-    Intent intent=new Intent();
+    private Intent intent=new Intent();
     private Context context;
     public IntentBuilder setClass(Context context, Class cls){
         intent.setClass(context,cls);
         this.context=context;
+        return this;
+    }
+
+    /**json数据格式:{"className":"activity类名","params":[{"name":"参数名",
+     * "type":"参数类型:String,int,float,long,double","value":"参数值"}]}*/
+    public IntentBuilder setIntentBody(Context context,String json){
+        this.context=context;
+        try {
+            JSONObject obj=new JSONObject(json);
+            intent.setClassName(context,obj.getString("className"));
+            JSONArray params=obj.getJSONArray("params");
+            for(int i=0;i<params.length();i++){
+                JSONObject jo=params.getJSONObject(i);
+                String type=jo.getString("type");
+                if("String".equals(type)){
+                    intent.putExtra(jo.getString("name"),jo.getString("value"));
+                }else if("int".equals(type)){
+                    intent.putExtra(jo.getString("name"),jo.getInt("value"));
+                }else if("float".equals(type)){
+                    double d=jo.getDouble("value");
+                    intent.putExtra(jo.getString("name"),(float)d);
+                }else if("long".equals(type)){
+                    intent.putExtra(jo.getString("name"),jo.getLong("value"));
+                }else if("double".equals(type)){
+                    intent.putExtra(jo.getString("name"),jo.getDouble("value"));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -77,6 +111,15 @@ public class IntentBuilder {
 
     public IntentBuilder add(Bundle bundle){
         intent.putExtras(bundle);
+        return this;
+    }
+
+    public Intent getIntent(){
+        return intent;
+    }
+
+    public IntentBuilder context(Context context){
+        this.context=context;
         return this;
     }
 

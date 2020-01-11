@@ -9,4 +9,22 @@
         <item name="android:backgroundDimEnabled">true</item><!--模糊-->
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+    <style name="ZebaBaseDialog" parent="android:style/Theme.Dialog">
+        <item name="android:background">#00000000</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item><!--半透明-->
+        <item name="android:backgroundDimEnabled">true</item><!--模糊-->
+    </style>
+    <style name="ZebaBaseDialogBottomAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/zeba_base_dialog_bottom_enter</item>
+        <item name="android:windowExitAnimation">@anim/zeba_base_dialog_bottom_exit</item>
+    </style>
+    <style name="ZebaBaseDialogCenterAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/zeba_base_dialog_center_enter</item>
+        <item name="android:windowExitAnimation">@anim/zeba_base_dialog_center_exit</item>
+    </style>
 </resources>

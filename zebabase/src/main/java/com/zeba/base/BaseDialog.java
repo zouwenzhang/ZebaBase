@@ -42,6 +42,7 @@ public abstract class BaseDialog extends Dialog {
         setCanceledOnTouchOutside(true);
     }
 
+    @Override
     public void show() {
         super.show();
         if (getWindow() != null) {

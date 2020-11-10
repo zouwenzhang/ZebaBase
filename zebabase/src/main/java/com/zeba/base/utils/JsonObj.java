@@ -80,6 +80,24 @@ public class JsonObj {
         return null;
     }
 
+    public JSONObject getObj(String path){
+        try {
+            return getObj(toPath(path),jo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean has(String path){
+        try {
+            return has(toPath(path),jo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private String get(List<String> ps,JSONObject obj) throws JSONException {
         if(obj.has(ps.get(0))){
             String name=ps.get(0);
@@ -90,6 +108,30 @@ public class JsonObj {
             return get(ps,obj.getJSONObject(name));
         }
         return null;
+    }
+
+    private JSONObject getObj(List<String> ps,JSONObject obj) throws JSONException {
+        if(obj.has(ps.get(0))){
+            String name=ps.get(0);
+            if(ps.size()==1){
+                return obj.getJSONObject(name);
+            }
+            ps.remove(0);
+            return getObj(ps,obj.getJSONObject(name));
+        }
+        return null;
+    }
+
+    private boolean has(List<String> ps,JSONObject obj) throws JSONException {
+        if(obj.has(ps.get(0))){
+            String name=ps.get(0);
+            if(ps.size()==1){
+                return obj.has(name);
+            }
+            ps.remove(0);
+            return has(ps,obj.getJSONObject(name));
+        }
+        return false;
     }
 
     private List<String> toPath(String path){

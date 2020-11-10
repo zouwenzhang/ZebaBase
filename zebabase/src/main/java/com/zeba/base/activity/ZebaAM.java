@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ZebaAM {
-	private List<BaseActivityIml> activityStack;
-	private Map<String,List<BaseActivityIml>> tabMap;
+	private List<FrameActivityIml> activityStack;
+	private Map<String,List<FrameActivityIml>> tabMap;
 	private static ZebaAM instance;
 
 	private ZebaAM() {
@@ -22,7 +22,7 @@ public class ZebaAM {
 	}
 
 	// 退出栈顶Activity
-	public void pop(BaseActivityIml activity) {
+	public void pop(FrameActivityIml activity) {
 		if (activity != null) {
 			removeTab(activity);
 			getQueue().remove(activity);
@@ -30,16 +30,16 @@ public class ZebaAM {
 	}
 
 	// 获得当前栈顶Activity
-	public BaseActivityIml current() {
+	public FrameActivityIml current() {
 		if( getQueue().size()==0){
 			return null;
 		}
-		BaseActivityIml activity = activityStack.get(activityStack.size()-1);
+		FrameActivityIml activity = activityStack.get(activityStack.size()-1);
 		return activity;
 	}
 
 	/**从最新的开始，获取第几个*/
-	public BaseActivityIml getByTopIndex(int index){
+	public FrameActivityIml getByTopIndex(int index){
 		int qIndex=getQueue().size()-index;
 		if( qIndex<=0){
 			return null;
@@ -49,21 +49,21 @@ public class ZebaAM {
 	/**
 	 * activity是否在第index层
 	 * */
-	public boolean inByTopIndex(BaseActivityIml activity,int index){
+	public boolean inByTopIndex(FrameActivityIml activity, int index){
 		if(getByTopIndex(index)==null){
 			return false;
 		}
 		return true;
 	}
 
-	public List<BaseActivityIml> getQueue(){
+	public List<FrameActivityIml> getQueue(){
 		if (activityStack == null) {
 			activityStack = new ArrayList<>();
 		}
 		return activityStack;
 	}
 
-	public Map<String,List<BaseActivityIml>> getTabMap(){
+	public Map<String,List<FrameActivityIml>> getTabMap(){
 		if(tabMap==null){
 			tabMap=new HashMap<>();
 		}
@@ -71,13 +71,13 @@ public class ZebaAM {
 	}
 
 	// 将当前Activity推入栈中
-	public void push(BaseActivityIml activity) {
+	public void push(FrameActivityIml activity) {
 		getQueue().add(activity);
 	}
 
 	public void popBackAll(){
 		while(true){
-			BaseActivityIml activity = current();
+			FrameActivityIml activity = current();
 			if (activity == null) {
 				break;
 			}
@@ -86,8 +86,8 @@ public class ZebaAM {
 		}
 	}
 
-	public void addTab(BaseActivityIml activity,String tab){
-		List<BaseActivityIml> list=getTabMap().get(tab);
+	public void addTab(FrameActivityIml activity, String tab){
+		List<FrameActivityIml> list=getTabMap().get(tab);
 		if(list==null){
 			list=new ArrayList<>();
 			getTabMap().put(tab,list);
@@ -95,11 +95,11 @@ public class ZebaAM {
 		list.add(activity);
 	}
 
-	public void removeTab(BaseActivityIml activity){
+	public void removeTab(FrameActivityIml activity){
 		Iterator<String> it= getTabMap().keySet().iterator();
 		while(it.hasNext()){
 			String key=it.next();
-			List<BaseActivityIml> list=getTabMap().get(key);
+			List<FrameActivityIml> list=getTabMap().get(key);
 			if(list!=null&&list.contains(activity)){
 				list.remove(activity);
 				if(list.size()==0){
@@ -111,12 +111,12 @@ public class ZebaAM {
 
 	public void popBackByTab(String tab){
 
-		List<BaseActivityIml> list=getTabMap().get(tab);
+		List<FrameActivityIml> list=getTabMap().get(tab);
 		if(list==null){
 			return;
 		}
 		for(int i=list.size()-1;i>=0;i--){
-			BaseActivityIml activity=list.get(i);
+			FrameActivityIml activity=list.get(i);
 			pop(activity);
 			activity.back();
 		}
@@ -125,7 +125,7 @@ public class ZebaAM {
 	}
 
 	public void popBackToIndex(int index){
-		List<BaseActivityIml> list=getQueue();
+		List<FrameActivityIml> list=getQueue();
 		for(int i=list.size()-1;i>index;i--){
 			list.get(i).back();
 		}

@@ -39,10 +39,16 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
     private Map<String, Map<String,String>> textMap;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(!isProxyMode){
             super.onCreate(savedInstanceState);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            ZebaAM.get().push(that());
         }
         initCreateView();
         initStatusBar();
@@ -58,16 +64,13 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
     }
 
     protected void initCreateView(){
-        if(!isProxyMode){
-            View view=createContentView();
-            if(view!=null){
-                setContentView(view);
-            }else if(getContentViewId()!=0){
-                setContentView(getContentViewId());
-            }
+        View view=loadContentView();
+        if(view!=null){
+            that().setContentView(view);
+        }else if(getContentViewId()!=0){
+            that().setContentView(getContentViewId());
         }
         ZebaPresenter.inject(this);
-        ZebaAM.get().push(this);
         initView();
         initData();
         initListener();
@@ -130,7 +133,7 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
         return 0;
     }
 
-    protected View createContentView(){
+    protected View loadContentView(){
         return null;
     }
 

@@ -1,5 +1,6 @@
 package org.zeba.quick.frame.base;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,6 +9,10 @@ public class PageProxy {
 
     public PageProxy(FrameActivity activity){
         this.activity=activity;
+    }
+
+    public void attachBaseContext(Context context){
+        activity.attachBaseContext(context);
     }
 
     public void onCreate(Bundle savedInstanceState) {

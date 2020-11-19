@@ -24,14 +24,23 @@ public abstract class BaseDialog extends Dialog {
         init();
     }
 
-    protected abstract int getContentViewId();
+    protected int getContentViewId(){
+        return 0;
+    }
+
+    protected View loadContentView(){
+        return null;
+    }
 
     protected void initView(View view){}
     protected void initData(){};
     protected void initListener(){};
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(getContentViewId(), null);
+        View view=loadContentView();
+        if(view==null){
+            view = LayoutInflater.from(getContext()).inflate(getContentViewId(), null);
+        }
 //        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        view.setLayoutParams(layoutParams);
         setContentView(view);

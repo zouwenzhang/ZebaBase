@@ -19,7 +19,7 @@ public abstract class FrameFragment extends Fragment implements FrameControlView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView=createContentView();
+        mView=loadContentView();
         if(mView==null){
             mView= View.inflate(getContext(),getContentViewId(),null);
         }
@@ -33,7 +33,7 @@ public abstract class FrameFragment extends Fragment implements FrameControlView
     protected int getContentViewId(){
         return 0;
     }
-    protected View createContentView(){
+    protected View loadContentView(){
         return null;
     }
     protected String getContentViewName(){return null;}

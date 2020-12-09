@@ -35,7 +35,7 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
     private boolean isProxyMode=false;
     private ActivityLife activityLife=new ActivityLife();
     private WeakReference<FrameActivity> refActivity=new WeakReference<>(this);
-    private PageProxy inProxy =new PageProxy(this);
+    private PageProxy myProxy =new PageProxy(this);
     private Map<String, Map<String,String>> textMap;
 
     @Override
@@ -217,6 +217,14 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
         return name;
     }
 
+    public void setResultData(int resultCode){
+        that().setResult(resultCode);
+    }
+
+    public void setResultData(int resultCode,Intent data){
+        that().setResult(resultCode,data);
+    }
+
     public void setTextMap(Map<String,Map<String,String>> map){
         textMap=map;
     }
@@ -265,8 +273,8 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
             IntentBuilder.onDestroy(this);
         }
         activityLife.onDestroy();
-        inProxy.clear();
-        inProxy =null;
+        myProxy.clear();
+        myProxy =null;
         if(textMap!=null){
             textMap.clear();
             textMap=null;
@@ -300,15 +308,27 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
         isProxyMode=true;
     }
 
-    public PageProxy getInProxy(){
-        return inProxy;
+    public PageProxy getMyProxy(){
+        return myProxy;
     }
 
     public FrameActivity that(){
         return refActivity.get();
     }
 
-    public void loadPageError(int code,String msg){
+    public void loadPageError(Exception e){
+
+    }
+
+    public void loadPageFinish(){
+
+    }
+
+    public void showWebPageLoading(){
+
+    }
+
+    public void hideWebPageLoading(){
 
     }
 

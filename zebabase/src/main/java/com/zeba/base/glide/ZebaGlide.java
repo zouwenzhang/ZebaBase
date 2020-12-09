@@ -3,11 +3,15 @@ package com.zeba.base.glide;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.ImageViewTarget;
 
 public class ZebaGlide {
 
@@ -20,6 +24,13 @@ public class ZebaGlide {
             return;
         }
         Glide.with(context).load(url).into(view);
+    }
+
+    public static void loadImg(Context context,ImageView view, String url){
+        if(!checkWithContext(context)){
+            return;
+        }
+        Glide.with(context).load(url).into(new MyGlideImageViewTarget(view));
     }
     public static void load(Context context,int def,ImageView view, String url){
         if(!checkWithContext(context)){

@@ -1,5 +1,6 @@
 package com.zeba.base.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -94,6 +96,7 @@ public class CommonUtil {
                                     .getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -103,10 +106,10 @@ public class CommonUtil {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         Uri data = Uri.parse("tel:" + phone);
         intent.setData(data);
-        // 修复在模拟器下找不到拨号页面错误
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
+        try {
             context.startActivity(intent);
-        } else {
+        } catch (Exception e) {
+            e.printStackTrace();
             Toast.makeText(context, "无法自动拨号，电话号码：" + phone, Toast.LENGTH_LONG)
                     .show();
         }
@@ -118,10 +121,15 @@ public class CommonUtil {
         Intent intent = new Intent(Intent.ACTION_CALL);
         Uri data = Uri.parse("tel:" + phone);
         intent.setData(data);
-        // 修复在模拟器下找不到拨号页面错误
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
+        try {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(context, "无法自动拨号，请开启拨打电话权限，电话号码：" + phone, Toast.LENGTH_LONG)
+                        .show();
+                return;
+            }
             context.startActivity(intent);
-        } else {
+        } catch (Exception e) {
+            e.printStackTrace();
             Toast.makeText(context, "无法自动拨号，电话号码：" + phone, Toast.LENGTH_LONG)
                     .show();
         }
@@ -143,7 +151,7 @@ public class CommonUtil {
 
     /**打开默认浏览器*/
     public static void openBrowser(Context context, String url) {
-        try{
+        try {
             Intent intent = new Intent();
             intent.setAction("android.intent.action.VIEW");
             Uri content_url = Uri.parse(url);
@@ -155,7 +163,7 @@ public class CommonUtil {
             intent.setData(content_url);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -166,8 +174,12 @@ public class CommonUtil {
         try {
             TelephonyManager telephonemanage = (TelephonyManager) context
                     .getSystemService(Context.TELEPHONY_SERVICE);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                return "";
+            }
             miei = telephonemanage.getDeviceId();
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return miei;
     }

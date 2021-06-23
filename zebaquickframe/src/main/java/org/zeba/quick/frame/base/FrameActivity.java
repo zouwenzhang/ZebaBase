@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,9 +36,11 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
     private boolean isShow=false;
     private boolean isProxyMode=false;
     private ActivityLife activityLife=new ActivityLife();
-    private WeakReference<FrameActivity> refActivity=new WeakReference<>(this);
     private PageProxy myProxy =new PageProxy(this);
     private Map<String, Map<String,String>> textMap;
+    private FrameActivity parentActivity;
+    private FrameActivity childActivity;
+    private boolean isClosed=false;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -96,10 +100,14 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
     }
 
     public void setStateBarLightColor(){
+        setStateBarLightColor(Color.parseColor("#ffffff"));
+    }
+
+    public void setStateBarLightColor(int color){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             View decorView = that().getWindow().getDecorView();
             if(decorView != null){
-                that().getWindow().setStatusBarColor(Color.parseColor("#ffffff"));
+                that().getWindow().setStatusBarColor(color);
                 that().getWindow().getDecorView().setSystemUiVisibility
                         (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN  | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
@@ -259,10 +267,13 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
 
     @Override
     public void back() {
-        if(!isProxyMode){
-            ZebaAM.get().pop(this);
+        isClosed=true;
+        if(childActivity!=null){
+            childActivity.back();
+        }else{
+            ZebaAM.get().pop(that());
+            that().finish();
         }
-        that().finish();
     }
 
     @Override
@@ -272,6 +283,7 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
             ZebaAM.get().pop(this);
             IntentBuilder.onDestroy(this);
         }
+        isClosed=true;
         activityLife.onDestroy();
         myProxy.clear();
         myProxy =null;
@@ -279,6 +291,8 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
             textMap.clear();
             textMap=null;
         }
+        parentActivity=null;
+        childActivity=null;
     }
 
     @Override
@@ -304,16 +318,31 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
     }
 
     public void setParentActivity(FrameActivity activity){
-        refActivity=new WeakReference<>(activity);
+        parentActivity=activity;
         isProxyMode=true;
+    }
+
+    public void setChildActivity(FrameActivity activity){
+        childActivity=activity;
     }
 
     public PageProxy getMyProxy(){
         return myProxy;
     }
 
+    public FrameActivity getParentActivity(){
+        return parentActivity;
+    }
+
+    public FrameActivity getChildActivity(){
+        return childActivity;
+    }
+
     public FrameActivity that(){
-        return refActivity.get();
+        if(parentActivity!=null){
+            return parentActivity;
+        }
+        return this;
     }
 
     public void loadPageError(Exception e){
@@ -332,4 +361,61 @@ public abstract class FrameActivity extends AppCompatActivity implements FrameAc
 
     }
 
+    public void showLoadingView(){
+
+    }
+
+    public void dismissLoadingView(){
+
+    }
+
+    public boolean isProxyMode(){
+        return isProxyMode;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        boolean r1=super.dispatchTouchEvent(ev);
+        boolean r2=onPageDispatchTouchEvent(ev);
+        return r1||r2;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean r1=super.onTouchEvent(event);
+        boolean r2=onPageTouchEvent(event);
+        return r1||r2;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        boolean r1= super.dispatchKeyEvent(event);
+        boolean r2=onPageDispatchKeyEvent(event);
+        return r1||r2;
+    }
+
+    public boolean onPageDispatchTouchEvent(MotionEvent ev){
+        if(childActivity!=null){
+            return childActivity.onPageDispatchTouchEvent(ev);
+        }
+        return false;
+    }
+
+    public boolean onPageTouchEvent(MotionEvent ev){
+        if(childActivity!=null){
+            return childActivity.onPageTouchEvent(ev);
+        }
+        return false;
+    }
+
+    public boolean onPageDispatchKeyEvent(KeyEvent ke){
+        if(childActivity!=null){
+            return childActivity.onPageDispatchKeyEvent(ke);
+        }
+        return false;
+    }
+
+    public boolean isClosed(){
+        return isClosed;
+    }
 }

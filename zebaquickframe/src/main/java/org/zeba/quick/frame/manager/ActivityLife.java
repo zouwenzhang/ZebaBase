@@ -18,6 +18,10 @@ public class ActivityLife {
         }
     }
 
+    public void removeCallBack(PageListener callBack){
+        callBacks.remove(callBack);
+    }
+
     public void onCreate(Bundle savedInstanceState){
         for(PageListener callBack:callBacks){
             callBack.onCreate(savedInstanceState);

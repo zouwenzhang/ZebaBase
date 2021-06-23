@@ -3,6 +3,7 @@ package org.zeba.quick.frame.base;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 public class PageProxy {
     private FrameActivity activity;
@@ -50,4 +51,5 @@ public class PageProxy {
     public void clear(){
         activity=null;
     }
+
 }
